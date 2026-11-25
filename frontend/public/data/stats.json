@@ -1,0 +1,401 @@
+{
+  "generated_at": "2026-11-26 00:25 KST",
+  "total": 312,
+  "active_total": 58,
+  "new_count": 54,
+  "expired_count": 254,
+  "preschool_count": 18,
+  "infant_count": 0,
+  "elementary_count": 23,
+  "family_count": 1,
+  "all_age_count": 17,
+  "apply_count": 24,
+  "ready_count": 30,
+  "weekend_count": 27,
+  "weekday_count": 30,
+  "library_stats": [
+    {
+      "region": "성남",
+      "library_name": "성남위례도서관",
+      "total_count": 7,
+      "active_count": 3,
+      "new_count": 2,
+      "apply_count": 3,
+      "ready_count": 0,
+      "preschool_count": 2,
+      "weekend_count": 2
+    },
+    {
+      "region": "송파",
+      "library_name": "가든파이브(송파구)",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "가락몰도서관",
+      "total_count": 14,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "거마도서관",
+      "total_count": 19,
+      "active_count": 2,
+      "new_count": 1,
+      "apply_count": 0,
+      "ready_count": 1,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "더 갤러리 호수",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "돌마리도서관",
+      "total_count": 22,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 0,
+      "ready_count": 1,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "마천청소년센터",
+      "total_count": 2,
+      "active_count": 2,
+      "new_count": 2,
+      "apply_count": 2,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "석촌호수 아뜰리에",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "소나무언덕2호도서관",
+      "total_count": 9,
+      "active_count": 1,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "소나무언덕3호도서관",
+      "total_count": 21,
+      "active_count": 1,
+      "new_count": 0,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 1,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "소나무언덕4호도서관",
+      "total_count": 23,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "소나무언덕잠실본동도서관",
+      "total_count": 18,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "송파글마루도서관",
+      "total_count": 26,
+      "active_count": 9,
+      "new_count": 9,
+      "apply_count": 6,
+      "ready_count": 3,
+      "preschool_count": 4,
+      "weekend_count": 6
+    },
+    {
+      "region": "송파",
+      "library_name": "송파런 영어캠프",
+      "total_count": 8,
+      "active_count": 8,
+      "new_count": 8,
+      "apply_count": 0,
+      "ready_count": 8,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "송파문화예술회관",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 0,
+      "ready_count": 1,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "송파소식(송파구청)",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "송파어린이도서관",
+      "total_count": 33,
+      "active_count": 7,
+      "new_count": 7,
+      "apply_count": 3,
+      "ready_count": 4,
+      "preschool_count": 3,
+      "weekend_count": 3
+    },
+    {
+      "region": "송파",
+      "library_name": "송파어린이문화회관",
+      "total_count": 18,
+      "active_count": 4,
+      "new_count": 4,
+      "apply_count": 1,
+      "ready_count": 3,
+      "preschool_count": 4,
+      "weekend_count": 2
+    },
+    {
+      "region": "송파",
+      "library_name": "송파어린이영어도서관",
+      "total_count": 29,
+      "active_count": 3,
+      "new_count": 3,
+      "apply_count": 0,
+      "ready_count": 1,
+      "preschool_count": 2,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "송파위례도서관",
+      "total_count": 24,
+      "active_count": 2,
+      "new_count": 2,
+      "apply_count": 0,
+      "ready_count": 2,
+      "preschool_count": 1,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "송파청소년센터",
+      "total_count": 2,
+      "active_count": 2,
+      "new_count": 2,
+      "apply_count": 1,
+      "ready_count": 1,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "오금청소년센터",
+      "total_count": 2,
+      "active_count": 2,
+      "new_count": 2,
+      "apply_count": 2,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "위례교육센터(영어캠프)",
+      "total_count": 4,
+      "active_count": 4,
+      "new_count": 4,
+      "apply_count": 0,
+      "ready_count": 4,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "잠실2동 자치회관",
+      "total_count": 3,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "잠실본동 자치회관",
+      "total_count": 2,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    },
+    {
+      "region": "송파",
+      "library_name": "잠실청소년센터",
+      "total_count": 1,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 1,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 1
+    },
+    {
+      "region": "송파",
+      "library_name": "풍납도서관",
+      "total_count": 17,
+      "active_count": 1,
+      "new_count": 1,
+      "apply_count": 0,
+      "ready_count": 1,
+      "preschool_count": 1,
+      "weekend_count": 1
+    },
+    {
+      "region": "하남",
+      "library_name": "하남위례도서관",
+      "total_count": 3,
+      "active_count": 0,
+      "new_count": 0,
+      "apply_count": 0,
+      "ready_count": 0,
+      "preschool_count": 0,
+      "weekend_count": 0
+    }
+  ],
+  "crawler_logs": [
+    {
+      "source": "EXPERIENCE",
+      "library_name": "송파어린이문화회관 (체험관 및 영유아 문화공간)",
+      "last_attempt_at": "2026-11-26 00:25:55",
+      "last_success_at": "2026-11-26 00:25:55",
+      "status": "OK",
+      "item_count": 29,
+      "error_message": null
+    },
+    {
+      "source": "HANAM",
+      "library_name": "하남시립 위례도서관",
+      "last_attempt_at": "2026-11-26 00:25:55",
+      "last_success_at": "2026-11-26 00:25:55",
+      "status": "OK",
+      "item_count": 2,
+      "error_message": ""
+    },
+    {
+      "source": "SEONGNAM",
+      "library_name": "성남시립 위례도서관",
+      "last_attempt_at": "2026-11-26 00:25:55",
+      "last_success_at": "2026-11-26 00:25:55",
+      "status": "OK",
+      "item_count": 4,
+      "error_message": ""
+    },
+    {
+      "source": "SONGPA",
+      "library_name": "송파구 통합도서관(송파위례, 글마루, 어린이 등)",
+      "last_attempt_at": "2026-11-26 00:25:55",
+      "last_success_at": "2026-11-26 00:25:55",
+      "status": "OK",
+      "item_count": 242,
+      "error_message": ""
+    },
+    {
+      "source": "SONGPA_LEARN",
+      "library_name": "송파런 (원어민캠프 및 자치회관 강좌)",
+      "last_attempt_at": "2026-11-26 00:25:55",
+      "last_success_at": "2026-11-26 00:25:55",
+      "status": "OK",
+      "item_count": 17,
+      "error_message": ""
+    }
+  ],
+  "crawl_summary": {
+    "songpa": {
+      "count": 242,
+      "status": "OK",
+      "error": ""
+    },
+    "songpa_learn": {
+      "count": 17,
+      "status": "OK",
+      "error": ""
+    },
+    "hanam": {
+      "count": 2,
+      "status": "OK",
+      "error": ""
+    },
+    "seongnam": {
+      "count": 4,
+      "status": "OK",
+      "error": ""
+    },
+    "experience": {
+      "count": 29,
+      "status": "OK",
+      "error": null
+    },
+    "total": 294
+  }
+}
