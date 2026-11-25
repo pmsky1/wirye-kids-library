@@ -637,30 +637,40 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Quick Status Toggle (접수중만 보기) */}
-              <button
-                type="button"
-                onClick={() => setSelectedStatus((prev) => (prev === "APPLY" ? "ALL" : "APPLY"))}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition border flex items-center gap-1 ${
-                  selectedStatus === "APPLY"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                    : "bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50"
-                }`}
-              >
-                <span>⚡ 접수중만</span>
-              </button>
+              {/* Status Segment (All / Apply / Ready / Wait) */}
+              <div className="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200/80 text-xs flex-wrap">
+                {[
+                  { key: "ALL", label: "전체", activeClass: "bg-gray-900 text-white shadow-xs" },
+                  { key: "APPLY", label: "⚡ 접수중", activeClass: "bg-emerald-600 text-white shadow-xs" },
+                  { key: "READY", label: "⏰ 접수예정", activeClass: "bg-amber-500 text-white shadow-xs" },
+                  { key: "WAIT", label: "⏳ 대기접수", activeClass: "bg-yellow-500 text-white shadow-xs" },
+                ].map((st) => (
+                  <button
+                    key={st.key}
+                    type="button"
+                    onClick={() => setSelectedStatus(st.key)}
+                    className={`whitespace-nowrap px-2.5 py-1 rounded-lg font-black transition ${
+                      selectedStatus === st.key
+                        ? st.activeClass
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    {st.label}
+                  </button>
+                ))}
+              </div>
 
-              {/* Quick NEW Toggle (2일 신규) */}
+              {/* Quick NEW Toggle (신규) */}
               <button
                 type="button"
                 onClick={() => setOnlyNew((prev) => !prev)}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition border flex items-center gap-1 ${
+                className={`whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-black transition border flex items-center gap-1 ${
                   onlyNew
                     ? "bg-violet-600 text-white border-violet-600 shadow-xs"
                     : "bg-white text-violet-800 border-violet-200 hover:bg-violet-50"
                 }`}
               >
-                <span>✨ 2일 신규</span>
+                <span>✨ 신규</span>
                 {newProgramsCount > 0 && (
                   <span className={`text-[10px] px-1 rounded ${onlyNew ? "bg-violet-700 text-white" : "bg-violet-100 text-violet-800"}`}>
                     {newProgramsCount}
