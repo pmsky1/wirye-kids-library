@@ -1,24 +1,28 @@
-from fastapi import FastAPI, BackgroundTasks, Query
+import asyncio
+from fastapi import FastAPI, BackgroundTasks, Query, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List, Dict, Any
 from contextlib import asynccontextmanager
 import urllib.parse
 from database import init_db, query_programs, get_library_stats, get_crawler_logs
 from crawlers.manager import run_all_crawlers
+from export_static import sync_github_pages, should_auto_sync_on_startup, get_last_sync_info, write_static_files
 from models import BookmarkletProfile
 
 from scheduler import start_scheduler, stop_scheduler
 
-# Lifespan event to init DB, start scheduler and run initial crawl if empty
+# Lifespan event to init DB, start scheduler and run startup crawl/sync in background
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     start_scheduler()
-    # Check if DB has data
     progs = query_programs()
     if len(progs) == 0:
-        print("[Startup] Database empty. Running initial crawl...")
-        await run_all_crawlers()
+        print("[Startup] Database empty. Running initial crawl + GitHub sync...")
+        await sync_github_pages(crawl=True, reason="startup_empty")
+    elif should_auto_sync_on_startup(min_age_minutes=30):
+        print("[Startup] Scheduling background crawl + GitHub sync...")
+        asyncio.create_task(sync_github_pages(crawl=True, reason="startup"))
     yield
     stop_scheduler()
 
@@ -111,13 +115,38 @@ def get_stats():
     }
 
 
+async def _refresh_local_only():
+    summary = await run_all_crawlers()
+    write_static_files(summary=summary)
+
+
 @app.post("/api/refresh")
 async def trigger_refresh(background_tasks: BackgroundTasks):
     """
     수동 크롤링 새로고침 트리거
     """
-    background_tasks.add_task(run_all_crawlers)
+    background_tasks.add_task(_refresh_local_only)
     return {"message": "크롤링 작업이 백그라운드에서 시작되었습니다."}
+
+
+@app.get("/api/sync-github/status")
+def sync_github_status(request: Request):
+    client_host = request.client.host if request.client else ""
+    if client_host not in ("127.0.0.1", "::1", "localhost"):
+        raise HTTPException(status_code=403, detail="로컬 환경에서만 조회 가능합니다.")
+    return get_last_sync_info()
+
+
+@app.post("/api/sync-github")
+async def sync_github_endpoint(request: Request, crawl: bool = Query(True, description="동기화 전 최신 크롤링 실행 여부")):
+    """
+    로컬 위키즈 화면 전용: 최신 데이터를 수집해 GitHub Pages 저장소로 즉시 커밋/푸시합니다.
+    """
+    client_host = request.client.host if request.client else ""
+    if client_host not in ("127.0.0.1", "::1", "localhost"):
+        raise HTTPException(status_code=403, detail="로컬 환경에서만 동기화를 실행할 수 있습니다.")
+    result = await sync_github_pages(crawl=crawl, reason="manual_ui")
+    return result
 
 
 @app.post("/api/bookmarklet/generate")

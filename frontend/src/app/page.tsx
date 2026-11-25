@@ -101,6 +101,9 @@ export default function Home() {
 
   // Client-only clock to avoid Next.js Cache Components prerender warning on new Date()
   const [clientClock, setClientClock] = useState<{ todayStr: string; nowTimeStr: string } | null>(null);
+  const [isLocalHost, setIsLocalHost] = useState(false);
+  const [syncingGithub, setSyncingGithub] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<{ status: string; text: string } | null>(null);
 
   // Load view mode from localStorage & initialize client clock on mount
   useEffect(() => {
@@ -111,6 +114,10 @@ export default function Home() {
     setClientClock({ todayStr, nowTimeStr });
 
     if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      if (!IS_STATIC && (host === "localhost" || host === "127.0.0.1")) {
+        setIsLocalHost(true);
+      }
       const saved = localStorage.getItem("wirye_kids_view_mode");
       if (saved === "list" || saved === "card") {
         setViewMode(saved);
@@ -178,6 +185,29 @@ export default function Home() {
       }, 3000);
     } catch (e) {
       setRefreshing(false);
+    }
+  };
+
+  const handleSyncGithub = async () => {
+    if (!isLocalHost || syncingGithub) return;
+    try {
+      setSyncingGithub(true);
+      setSyncMessage({ status: "LOADING", text: "전체 기관 수집 후 GitHub에 업로드하는 중입니다 (약 20초 소요)..." });
+      const res = await fetch(`${API_BASE}/api/sync-github?crawl=true`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setSyncMessage({ status: "ERROR", text: data.detail || "GitHub 동기화 중 오류가 발생했습니다." });
+      } else {
+        setSyncMessage({ status: data.status || "OK", text: data.message || "GitHub 동기화가 완료되었습니다." });
+        await fetchData();
+      }
+    } catch (e) {
+      setSyncMessage({ status: "ERROR", text: "백엔드 서버(localhost:8000) 연결을 확인해 주세요." });
+    } finally {
+      setSyncingGithub(false);
+      setTimeout(() => {
+        setSyncMessage((prev) => (prev?.status === "LOADING" ? prev : null));
+      }, 6000);
     }
   };
 
@@ -425,11 +455,29 @@ export default function Home() {
               }`}
               title="공공기관 수집 연동 상태 보기"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className={`w-2 h-2 rounded-full ${isAllCrawlersOk ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
               <span className="hidden sm:inline">
                 {IS_STATIC ? (stats?.generated_at ? `자동수집 ${stats.generated_at.slice(5, 16)}` : "자동 수집 정상") : "실시간 연동 정상"}
               </span>
             </button>
+
+            {/* Local-Only GitHub Sync Button */}
+            {isLocalHost && (
+              <button
+                type="button"
+                onClick={handleSyncGithub}
+                disabled={syncingGithub}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
+                  syncingGithub
+                    ? "bg-indigo-100 text-indigo-700 border-indigo-200 cursor-wait"
+                    : "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 shadow-xs"
+                }`}
+                title="로컬에서 최신 데이터를 수집해 공개 GitHub Pages 사이트에 즉시 업로드합니다"
+              >
+                <RefreshIcon className={`w-3.5 h-3.5 ${syncingGithub ? "animate-spin" : ""}`} />
+                <span>{syncingGithub ? "업로드 중..." : "GitHub 동기화"}</span>
+              </button>
+            )}
 
             {/* Booster Modal Trigger */}
             <button
@@ -456,6 +504,26 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 space-y-4">
+        {syncMessage && (
+          <div
+            className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center justify-between gap-3 ${
+              syncMessage.status === "ERROR"
+                ? "bg-red-50 border-red-200 text-red-700"
+                : syncMessage.status === "PUSHED"
+                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                : "bg-indigo-50 border-indigo-200 text-indigo-800"
+            }`}
+          >
+            <span>{syncMessage.text}</span>
+            <button
+              type="button"
+              onClick={() => setSyncMessage(null)}
+              className="text-current opacity-60 hover:opacity-100 px-1"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {/* Compact Integrated Filter Bar */}
         <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-200 shadow-sm space-y-3">
           {/* Row 1: Key Filters (Region, Day, Age, Status, NEW Toggle, Search) */}

@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
+        if: github.event_name != 'push'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -33,9 +34,11 @@ jobs:
           cache-dependency-path: backend/requirements.txt
 
       - name: Install Python dependencies
+        if: github.event_name != 'push'
         run: pip install -r backend/requirements.txt
 
-      - name: Run crawlers and export static JSON
+      - name: Run crawlers and export static JSON (schedule / manual only)
+        if: github.event_name != 'push'
         working-directory: backend
         run: python export_static.py
 
