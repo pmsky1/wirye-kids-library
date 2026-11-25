@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   SearchIcon,
   RefreshIcon,
+  CloudUploadIcon,
   BookmarkIcon,
   CheckCircleIcon,
   AlertCircleIcon,
@@ -547,7 +548,11 @@ export default function Home() {
                 }`}
                 title="로컬에서 최신 데이터를 수집해 공개 GitHub Pages 사이트에 즉시 업로드합니다"
               >
-                <RefreshIcon className={`w-3.5 h-3.5 shrink-0 ${syncingGithub ? "animate-spin" : ""}`} />
+                {syncingGithub ? (
+                  <RefreshIcon className="w-3.5 h-3.5 shrink-0 animate-spin" />
+                ) : (
+                  <CloudUploadIcon className="w-3.5 h-3.5 shrink-0" />
+                )}
                 <span className="hidden sm:inline">{syncingGithub ? "업로드 중..." : "GitHub 동기화"}</span>
                 <span className="sm:hidden">{syncingGithub ? "업로드" : "동기화"}</span>
               </button>
