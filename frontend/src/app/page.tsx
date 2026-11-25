@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import ProgramCard, { Program } from "@/components/ProgramCard";
 import ProgramListView from "@/components/ProgramListView";
 import BookmarkletModal from "@/components/BookmarkletModal";
@@ -123,6 +123,26 @@ export default function Home() {
   const [isLocalHost, setIsLocalHost] = useState(false);
   const [syncingGithub, setSyncingGithub] = useState(false);
   const [syncMessage, setSyncMessage] = useState<{ status: string; text: string } | null>(null);
+  const [isLibraryPopoverOpen, setIsLibraryPopoverOpen] = useState(false);
+  const [libraryPopoverSearch, setLibraryPopoverSearch] = useState("");
+  const libraryPopoverRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (libraryPopoverRef.current && !libraryPopoverRef.current.contains(e.target as Node)) {
+        setIsLibraryPopoverOpen(false);
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsLibraryPopoverOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   // Load view mode from localStorage & initialize client clock on mount
   useEffect(() => {
@@ -232,10 +252,10 @@ export default function Home() {
 
   // Short library display name for compact UI chips
   const shortenLibraryName = (name: string) => {
+    if (name === "송파어린이도서관") return "어린이도서관";
     return name
       .replace(/^송파어린이영어도서관$/, "어린이영어")
       .replace(/^송파글마루도서관$/, "글마루")
-      .replace(/^송파어린이도서관$/, "어린이도서관")
       .replace(/^송파위례도서관$/, "송파위례")
       .replace(/^성남위례도서관$/, "성남위례")
       .replace(/^송파어린이문화회관$/, "어린이문화회관")
@@ -561,17 +581,17 @@ export default function Home() {
           </div>
         )}
         {/* Compact Integrated Filter Bar */}
-        <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-200 shadow-sm space-y-3">
-          {/* Row 1: Key Filters (Region, Day, Age, Status, NEW Toggle, Search) */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5">
-            <div className="flex flex-wrap items-center gap-2">
+        <div className="bg-white p-3 sm:p-3.5 rounded-2xl border border-gray-200/90 shadow-sm space-y-2.5">
+          {/* Row 1: Ultra-compact Quick Segments + Search */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               {/* Region Segment */}
-              <div className="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200/80 text-xs">
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
-                  { key: "ALL", label: "🏢 전체" },
-                  { key: "송파", label: "📍 송파" },
-                  { key: "성남", label: "📍 성남" },
-                  { key: "하남", label: "📍 하남" },
+                  { key: "ALL", label: "전체" },
+                  { key: "송파", label: "송파" },
+                  { key: "성남", label: "성남" },
+                  { key: "하남", label: "하남" },
                 ].map((r) => (
                   <button
                     key={r.key}
@@ -581,9 +601,9 @@ export default function Home() {
                       setSelectedInstitutionType("ALL");
                       setSelectedLibrary("ALL");
                     }}
-                    className={`px-2.5 py-1 rounded-lg font-black transition ${
+                    className={`whitespace-nowrap px-2 sm:px-2.5 py-1 rounded-lg font-black transition ${
                       selectedRegion === r.key
-                        ? "bg-white text-gray-900 shadow-xs"
+                        ? "bg-white text-gray-950 shadow-xs"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -592,8 +612,8 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Day Type Toggle (All / Weekend / Weekday) - Default: WEEKEND */}
-              <div className="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200/80 text-xs">
+              {/* Day Type Toggle (All / Weekend / Weekday) */}
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
                   { key: "ALL", label: "전체" },
                   { key: "WEEKEND", label: "🎉 주말" },
@@ -603,7 +623,7 @@ export default function Home() {
                     key={d.key}
                     type="button"
                     onClick={() => setSelectedDayType(d.key)}
-                    className={`px-2.5 py-1 rounded-lg font-black transition ${
+                    className={`whitespace-nowrap px-2 sm:px-2.5 py-1 rounded-lg font-black transition ${
                       selectedDayType === d.key
                         ? "bg-blue-600 text-white shadow-xs"
                         : "text-gray-600 hover:text-gray-900"
@@ -614,19 +634,20 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Target Age Segment (All / Preschool / Elementary / Open) - Default: PRESCHOOL */}
-              <div className="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200/80 text-xs">
+              {/* Target Age Segment (All / Preschool / Elementary / Open) */}
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
-                  { key: "ALL", label: "전체" },
-                  { key: "PRESCHOOL", label: "🎈 유아(4~7세)" },
-                  { key: "ELEMENTARY", label: "🎒 초등" },
-                  { key: "OPEN", label: "🌟 누구나" },
+                  { key: "ALL", label: "전체", title: "전 연령" },
+                  { key: "PRESCHOOL", label: "🎈 유아", title: "유아 및 유치원 (4~7세)" },
+                  { key: "ELEMENTARY", label: "🎒 초등", title: "초등학생" },
+                  { key: "OPEN", label: "🌟 누구나", title: "전 연령 및 가족 누구나" },
                 ].map((a) => (
                   <button
                     key={a.key}
                     type="button"
+                    title={a.title}
                     onClick={() => setSelectedAge(a.key)}
-                    className={`px-2.5 py-1 rounded-lg font-black transition ${
+                    className={`whitespace-nowrap px-2 sm:px-2.5 py-1 rounded-lg font-black transition ${
                       selectedAge === a.key
                         ? "bg-rose-500 text-white shadow-xs"
                         : "text-gray-600 hover:text-gray-900"
@@ -638,33 +659,39 @@ export default function Home() {
               </div>
 
               {/* Status Segment (All / Apply / Ready / Wait) */}
-              <div className="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200/80 text-xs flex-wrap">
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
-                  { key: "ALL", label: "전체", activeClass: "bg-gray-900 text-white shadow-xs" },
-                  { key: "APPLY", label: "⚡ 접수중", activeClass: "bg-emerald-600 text-white shadow-xs" },
-                  { key: "READY", label: "⏰ 접수예정", activeClass: "bg-amber-500 text-white shadow-xs" },
-                  { key: "WAIT", label: "⏳ 대기접수", activeClass: "bg-yellow-500 text-white shadow-xs" },
-                ].map((st) => (
-                  <button
-                    key={st.key}
-                    type="button"
-                    onClick={() => setSelectedStatus(st.key)}
-                    className={`whitespace-nowrap px-2.5 py-1 rounded-lg font-black transition ${
-                      selectedStatus === st.key
-                        ? st.activeClass
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    {st.label}
-                  </button>
-                ))}
+                  { key: "ALL", label: "전체", dot: "", activeClass: "bg-gray-900 text-white shadow-xs" },
+                  { key: "APPLY", label: "접수중", dot: "bg-emerald-500", activeClass: "bg-emerald-600 text-white shadow-xs" },
+                  { key: "READY", label: "접수예정", dot: "bg-amber-500", activeClass: "bg-amber-500 text-white shadow-xs" },
+                  { key: "WAIT", label: "대기접수", dot: "bg-yellow-500", activeClass: "bg-yellow-500 text-white shadow-xs" },
+                ].map((st) => {
+                  const isActive = selectedStatus === st.key;
+                  return (
+                    <button
+                      key={st.key}
+                      type="button"
+                      onClick={() => setSelectedStatus(st.key)}
+                      className={`whitespace-nowrap px-2 sm:px-2.5 py-1 rounded-lg font-black transition flex items-center gap-1 ${
+                        isActive ? st.activeClass : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      {st.dot && (
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-white" : st.dot}`}
+                        />
+                      )}
+                      <span>{st.label}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Quick NEW Toggle (신규) */}
               <button
                 type="button"
                 onClick={() => setOnlyNew((prev) => !prev)}
-                className={`whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-black transition border flex items-center gap-1 ${
+                className={`whitespace-nowrap px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-black transition border flex items-center gap-1 ${
                   onlyNew
                     ? "bg-violet-600 text-white border-violet-600 shadow-xs"
                     : "bg-white text-violet-800 border-violet-200 hover:bg-violet-50"
@@ -680,19 +707,19 @@ export default function Home() {
             </div>
 
             {/* Keyword Search */}
-            <div className="relative w-full sm:w-48 lg:w-56">
+            <div className="relative w-full lg:w-52">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="도서관명, 강좌명 검색"
-                className="w-full pl-8 pr-7 py-1.5 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 focus:bg-white"
+                className="w-full pl-8 pr-7 py-1.5 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 focus:bg-white"
               />
-              <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+              <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2" />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-2 text-xs text-gray-400 hover:text-gray-600 font-bold"
+                  className="absolute right-2.5 top-1.5 text-xs text-gray-400 hover:text-gray-600 font-bold"
                 >
                   ✕
                 </button>
@@ -700,8 +727,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Row 2: Compact Category Chips (flex-wrap 1-2 lines max) + Grouped Institution Dropdown */}
-          <div className="pt-2.5 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          {/* Row 2: Compact Category Chips + Custom Modern Institution Popover */}
+          <div className="pt-2 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-[11px] font-bold text-gray-400 shrink-0 mr-0.5">기관:</span>
               {INSTITUTION_CATEGORIES.map((cat) => {
@@ -717,12 +744,12 @@ export default function Home() {
                       setSelectedInstitutionType(cat.key);
                       setSelectedLibrary("ALL");
                     }}
-                    className={`whitespace-nowrap shrink-0 px-2.5 py-1 rounded-lg text-xs font-black transition flex items-center gap-1 ${
+                    className={`whitespace-nowrap shrink-0 px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-black transition flex items-center gap-1 ${
                       isSelected
                         ? cat.key === "ALL"
                           ? "bg-gray-900 text-white shadow-xs"
                           : "bg-blue-600 text-white shadow-xs"
-                        : "bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                        : "bg-slate-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
                     }`}
                   >
                     <span>{cat.label}</span>
@@ -743,44 +770,169 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <select
-                aria-label="세부 기관 선택"
-                value={selectedLibrary}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSelectedLibrary(val);
-                  if (val !== "ALL") {
-                    setSelectedInstitutionType("ALL");
-                  }
-                }}
-                className={`w-full sm:w-52 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                  selectedLibrary !== "ALL"
-                    ? "bg-blue-50 border-blue-400 text-blue-900"
-                    : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-white"
-                }`}
-              >
-                <option value="ALL">세부 기관 전체 ({availableLibraries.length}곳)</option>
-                {(
-                  [
-                    { key: "LIBRARY", label: "📚 도서관" },
-                    { key: "CULTURE", label: "🎨 체험 및 문화공간" },
-                    { key: "YOUTH", label: "🎪 청소년센터" },
-                    { key: "LEARN", label: "🏫 영어캠프 및 송파런" },
-                  ] as const
-                ).map((group) => {
-                  const groupLibs = availableLibraries.filter((l) => l.category === group.key);
-                  if (groupLibs.length === 0) return null;
-                  return (
-                    <optgroup key={group.key} label={group.label}>
-                      {groupLibs.map((lib) => (
-                        <option key={lib.name} value={lib.name}>
-                          {shortenLibraryName(lib.name)} ({lib.count})
-                        </option>
-                      ))}
-                    </optgroup>
-                  );
-                })}
-              </select>
+              {/* Custom Sleek Popover Picker (replaces native OS select) */}
+              <div className="relative flex-1 sm:flex-initial" ref={libraryPopoverRef}>
+                <button
+                  type="button"
+                  aria-label="세부 기관 선택"
+                  aria-expanded={isLibraryPopoverOpen}
+                  onClick={() => setIsLibraryPopoverOpen((prev) => !prev)}
+                  className={`w-full sm:w-52 px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center justify-between gap-2 transition ${
+                    selectedLibrary !== "ALL"
+                      ? "bg-blue-50 border-blue-400 text-blue-900 shadow-xs"
+                      : isLibraryPopoverOpen
+                      ? "bg-white border-blue-400 text-gray-900 ring-2 ring-blue-100"
+                      : "bg-slate-50 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300"
+                  }`}
+                >
+                  <span className="truncate flex items-center gap-1.5">
+                    <MapPinIcon className={`w-3.5 h-3.5 shrink-0 ${selectedLibrary !== "ALL" ? "text-blue-600" : "text-gray-400"}`} />
+                    <span>
+                      {selectedLibrary !== "ALL"
+                        ? shortenLibraryName(selectedLibrary)
+                        : `세부 기관 선택 (${availableLibraries.length}곳)`}
+                    </span>
+                  </span>
+                  <svg
+                    className={`w-3.5 h-3.5 shrink-0 text-gray-400 transition-transform ${isLibraryPopoverOpen ? "rotate-180 text-blue-600" : ""}`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {isLibraryPopoverOpen && (
+                  <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-[calc(100vw-2.75rem)] sm:w-[440px] max-h-[70vh] flex flex-col rounded-2xl bg-white border border-slate-200 shadow-2xl shadow-slate-900/15 z-40 overflow-hidden">
+                    {/* Popover Header + Mini Search */}
+                    <div className="p-3 border-b border-slate-100 bg-slate-50/70 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black text-gray-900">
+                          세부 기관 직접 선택
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {selectedLibrary !== "ALL" && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedLibrary("ALL");
+                                setIsLibraryPopoverOpen(false);
+                              }}
+                              className="text-[11px] font-bold text-blue-600 hover:underline"
+                            >
+                              전체 보기
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setIsLibraryPopoverOpen(false)}
+                            className="w-6 h-6 rounded-full bg-white border border-slate-200 text-gray-400 hover:text-gray-700 flex items-center justify-center text-[11px]"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={libraryPopoverSearch}
+                          onChange={(e) => setLibraryPopoverSearch(e.target.value)}
+                          placeholder="기관명으로 찾기 (예: 위례, 글마루, 청소년)..."
+                          className="w-full pl-7 pr-6 py-1.5 rounded-lg border border-slate-200 bg-white text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                        <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-2" />
+                        {libraryPopoverSearch && (
+                          <button
+                            type="button"
+                            onClick={() => setLibraryPopoverSearch("")}
+                            className="absolute right-2 top-1.5 text-[11px] text-gray-400 hover:text-gray-700"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Categorized 2-column Grid */}
+                    <div className="p-3 overflow-y-auto space-y-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedLibrary("ALL");
+                          setIsLibraryPopoverOpen(false);
+                        }}
+                        className={`w-full px-3 py-2 rounded-xl border text-left text-xs font-black flex items-center justify-between transition ${
+                          selectedLibrary === "ALL"
+                            ? "bg-gray-900 text-white border-gray-900"
+                            : "bg-slate-50 text-gray-700 border-slate-200/80 hover:bg-slate-100"
+                        }`}
+                      >
+                        <span>전체 세부 기관 보기</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${selectedLibrary === "ALL" ? "bg-gray-700 text-white" : "bg-white text-gray-600"}`}>
+                          {availableLibraries.length}곳
+                        </span>
+                      </button>
+
+                      {(
+                        [
+                          { key: "LIBRARY", label: "📚 도서관" },
+                          { key: "CULTURE", label: "🎨 체험 및 문화공간" },
+                          { key: "YOUTH", label: "🎪 청소년센터" },
+                          { key: "LEARN", label: "🏫 영어캠프 및 송파런" },
+                        ] as const
+                      ).map((group) => {
+                        const q = libraryPopoverSearch.trim().toLowerCase();
+                        const groupLibs = availableLibraries.filter(
+                          (l) =>
+                            l.category === group.key &&
+                            (!q ||
+                              l.name.toLowerCase().includes(q) ||
+                              shortenLibraryName(l.name).toLowerCase().includes(q))
+                        );
+                        if (groupLibs.length === 0) return null;
+                        return (
+                          <div key={group.key} className="space-y-1.5">
+                            <div className="text-[11px] font-extrabold text-slate-400 px-0.5">
+                              {group.label}
+                            </div>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              {groupLibs.map((lib) => {
+                                const active = selectedLibrary === lib.name;
+                                return (
+                                  <button
+                                    key={lib.name}
+                                    type="button"
+                                    title={lib.name}
+                                    onClick={() => {
+                                      setSelectedLibrary(lib.name);
+                                      setSelectedInstitutionType("ALL");
+                                      setIsLibraryPopoverOpen(false);
+                                    }}
+                                    className={`px-2.5 py-2 rounded-xl border text-left text-xs font-bold flex items-center justify-between gap-1.5 transition ${
+                                      active
+                                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                                        : "bg-slate-50/80 text-gray-800 border-slate-200/70 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-800"
+                                    }`}
+                                  >
+                                    <span className="truncate">{shortenLibraryName(lib.name)}</span>
+                                    <span
+                                      className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded-md font-extrabold ${
+                                        active ? "bg-blue-700 text-white" : "bg-white text-slate-500 border border-slate-200/60"
+                                      }`}
+                                    >
+                                      {lib.count}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Reset Filters button if any active */}
               {(onlyNew || selectedDayType !== "WEEKEND" || selectedAge !== "PRESCHOOL" || selectedRegion !== "ALL" || selectedInstitutionType !== "ALL" || selectedLibrary !== "ALL" || selectedStatus !== "ALL" || searchQuery) && (
