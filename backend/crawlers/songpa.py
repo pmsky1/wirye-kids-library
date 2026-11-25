@@ -314,9 +314,9 @@ async def _fetch_songpa_movies(client: httpx.AsyncClient, programs: List[Program
 
                     target_raw = f"전체관람가 ({rating_text})" if rating_text else "누구나 관람"
                     if "12세" in rating_text:
-                        age_group, age_label = "ELEMENTARY", "🎒 초등학생(12세)"
+                        age_group, age_label = "ELEMENTARY", "초등학생(12세)"
                     else:
-                        age_group, age_label = "ALL", "🌟 누구나"
+                        age_group, age_label = "ALL", "누구나"
 
                     day_type, day_label = classify_day_type(time_info, event_date, event_date, movie_title)
                     detail_url = f"{req_url}?searchYmd={ym}" if direct_url else f"{MOVIE_URL}?manageCd={manage_cd}&searchYmd={ym}"

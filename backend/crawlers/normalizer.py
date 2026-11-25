@@ -110,29 +110,29 @@ def classify_target_age(raw_target: str, title: str = "") -> Tuple[str, str]:
     # 우선순위 판정:
     # A. 초등학생 키워드가 명시되어 있고 유아/영아가 아닌 경우 -> ELEMENTARY
     if has_elem and not (has_preschool or has_infant):
-        return "ELEMENTARY", "🎒 초등학생"
+        return "ELEMENTARY", "초등학생"
 
     # B. 영아 전용 (0~3세)
     if has_infant and not has_preschool:
-        return "INFANT", "🍼 영아 (0~3세)"
+        return "INFANT", "영아 (0~3세)"
 
     # C. 유치원/유아 (4~7세) - 핵심 타겟
     if has_preschool:
-        return "PRESCHOOL", "🎈 유치원/유아 (4~7세)"
+        return "PRESCHOOL", "유치원/유아 (4~7세)"
 
     # D. 유아 키워드는 없지만 초등 키워드가 있는 경우
     if has_elem:
-        return "ELEMENTARY", "🎒 초등학생"
+        return "ELEMENTARY", "초등학생"
 
     # E. 가족 단위
     if has_family:
-        return "FAMILY", "👨‍👩‍👧 가족/보호자 동반"
+        return "FAMILY", "가족/보호자 동반"
 
     # F. 누구나/전체
     if re.search(r'(누구나|전체|전\s*연령|연령\s*무관|제한\s*없음|온가족|누구든지|주민|시민)', combined):
-        return "ALL", "🌟 누구나"
+        return "ALL", "누구나"
 
-    return "PRESCHOOL", "🎈 유아/어린이"
+    return "PRESCHOOL", "유아/어린이"
 
 
 def classify_day_type(time_info: Optional[str], start_date: Optional[str], end_date: Optional[str], title: str = "") -> Tuple[str, str]:

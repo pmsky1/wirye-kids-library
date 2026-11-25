@@ -351,7 +351,7 @@ export default function ProgramListView({
                       </span>
                       <span className="text-gray-300">|</span>
                       <span className="font-semibold text-rose-700">
-                        {program.target_age_group === "ALL" ? "🌟 누구나" : program.target_label || cleanTarget}
+                        {program.target_age_group === "ALL" ? "누구나" : cleanTargetLabel}
                       </span>
                     </div>
                   </div>

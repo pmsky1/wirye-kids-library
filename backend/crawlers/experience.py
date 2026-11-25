@@ -369,9 +369,9 @@ def _parse_newstool_article(
                 fee=kv.get("이용요금", "무료"),
                 capacity="동시 이용 400명 이내",
                 day_type_override="WEEKEND",
-                day_label_override="🎉 주말/매일",
+                day_label_override="주말/매일",
                 target_group_override="ALL",
-                target_label_override="🌟 유아 및 초등 (3~12세)",
+                target_label_override="유아 및 초등 (3~12세)",
                 status_label="운영안내",
             )
             if p:
@@ -413,9 +413,9 @@ def _parse_newstool_article(
                     fee="무료",
                     capacity="현장 참여 가능",
                     day_type_override="WEEKEND",
-                    day_label_override="🎉 주말(토)",
+                    day_label_override="주말(토)",
                     target_group_override="ALL",
-                    target_label_override="🌟 누구나",
+                    target_label_override="누구나",
                     status_label="현장참여",
                 )
                 if p:
@@ -434,9 +434,9 @@ def _parse_newstool_article(
                     capacity="선착순 80명",
                     apply_url="https://www.songpayouth.or.kr/",
                     day_type_override="WEEKEND",
-                    day_label_override="🎉 주말포함(금~일)",
+                    day_label_override="주말포함(금~일)",
                     target_group_override="ELEMENTARY",
-                    target_label_override="🎒 초등학생",
+                    target_label_override="초등학생",
                     status_label="접수안내",
                 )
                 if p:
@@ -455,9 +455,9 @@ def _parse_newstool_article(
                     capacity="선착순 모집",
                     apply_url="https://www.ogeum.or.kr/",
                     day_type_override="WEEKDAY",
-                    day_label_override="📅 평일(금)",
+                    day_label_override="평일(금)",
                     target_group_override="ELEMENTARY",
-                    target_label_override="🎒 초등/가족 (9세~)",
+                    target_label_override="초등/가족 (9세~)",
                     status_label="접수안내",
                 )
                 if p:
@@ -475,9 +475,9 @@ def _parse_newstool_article(
                     fee="무료",
                     capacity="현장 선착순",
                     day_type_override="WEEKDAY",
-                    day_label_override="📅 평일(목)",
+                    day_label_override="평일(목)",
                     target_group_override="ALL",
-                    target_label_override="🌟 누구나",
+                    target_label_override="누구나",
                     status_label="무료공연",
                 )
                 if p:
@@ -522,9 +522,9 @@ def _parse_newstool_article(
                     capacity="15명 선착순",
                     apply_url=forms_url or detail_url,
                     day_type_override="WEEKEND",
-                    day_label_override="🎉 주말(토)",
+                    day_label_override="주말(토)",
                     target_group_override="ALL",
-                    target_label_override="🌟 유아 및 초등 (7세~초6)",
+                    target_label_override="유아 및 초등 (7세~초6)",
                     status_label="접수중",
                 )
                 if p:
@@ -543,9 +543,9 @@ def _parse_newstool_article(
                     capacity="선착순 모집",
                     apply_url=naver_url or detail_url,
                     day_type_override="WEEKEND",
-                    day_label_override="🎉 주말(토)",
+                    day_label_override="주말(토)",
                     target_group_override="FAMILY",
-                    target_label_override="👨‍👩‍👧 가족/누구나",
+                    target_label_override="가족/누구나",
                     status_label="접수중",
                 )
                 if p:
@@ -566,9 +566,9 @@ def _parse_newstool_article(
                     apply_start=a_start,
                     apply_url="https://www.songpayouth.or.kr/",
                     day_type_override="WEEKDAY",
-                    day_label_override="📅 평일(월~금)",
+                    day_label_override="평일(월~금)",
                     target_group_override="ELEMENTARY",
-                    target_label_override="🎒 초등학생",
+                    target_label_override="초등학생",
                     status_code="READY" if a_start and a_start > now_str else "APPLY",
                     status_label="접수예정" if a_start and a_start > now_str else "접수중",
                 )
@@ -599,9 +599,9 @@ def _parse_newstool_article(
                 capacity="110석",
                 apply_url=yeyak_url,
                 day_type_override="WEEKEND",
-                day_label_override="🎉 주말(토, 일)",
+                day_label_override="주말(토, 일)",
                 target_group_override="ALL",
-                target_label_override="🌟 누구나",
+                target_label_override="누구나",
                 status_label="예약접수",
             )
             if p:
@@ -638,9 +638,9 @@ def _parse_newstool_article(
                             capacity="현장 선착순 입장",
                             apply_url="https://www.splib.or.kr/spjlib/index.do",
                             day_type_override="WEEKEND" if dow in ("토", "일") else "WEEKDAY",
-                            day_label_override=f"🎉 주말({dow})" if dow in ("토", "일") else f"📅 평일({dow})",
+                            day_label_override=f"주말({dow})" if dow in ("토", "일") else f"평일({dow})",
                             target_group_override="ALL",
-                            target_label_override="🌟 누구나",
+                            target_label_override="누구나",
                             status_label="무료상영",
                         )
                         if p:
@@ -666,9 +666,9 @@ def _parse_newstool_article(
                 fee=kv.get("관람료", "무료"),
                 capacity="상설 무료 관람",
                 day_type_override="WEEKEND",
-                day_label_override="🎉 주말포함(화~일)",
+                day_label_override="주말포함(화~일)",
                 target_group_override="ALL",
-                target_label_override="🌟 누구나",
+                target_label_override="누구나",
                 status_label="무료관람",
             )
             if p:
@@ -693,9 +693,9 @@ def _parse_newstool_article(
                 capacity="선착순 예매",
                 apply_start=a_start,
                 day_type_override="WEEKEND",
-                day_label_override="🎉 주말(토)",
+                day_label_override="주말(토)",
                 target_group_override="ALL",
-                target_label_override="🌟 누구나",
+                target_label_override="누구나",
                 status_code="READY" if a_start and a_start > now_str else "APPLY",
                 status_label="예매예정" if a_start and a_start > now_str else "예매중",
             )
@@ -719,9 +719,9 @@ def _parse_newstool_article(
             capacity="응모자 선정",
             apply_end=a_end,
             day_type_override="WEEKEND",
-            day_label_override="🎉 상시/이메일",
+            day_label_override="상시/이메일",
             target_group_override="ALL",
-            target_label_override="🌟 누구나",
+            target_label_override="누구나",
             status_label="응모중",
         )
         if p:
@@ -798,10 +798,10 @@ async def fetch_experience_programs() -> Tuple[List[Program], str, Optional[str]
             "region": "송파",
             "title": "[상상놀이터] 송파어린이문화회관 키움체험(과학/직업/오감) 및 주말 체험극",
             "target_age_group": "PRESCHOOL",
-            "target_label": "🎈 유치원/유아 (4~7세)",
+            "target_label": "유치원/유아 (4~7세)",
             "target_raw": "영유아 (4~7세) 및 보호자",
             "day_type": "WEEKEND",
-            "day_label": "🎉 주말(토)",
+            "day_label": "주말(토)",
             "fee": "3,000원",
             "capacity": "회차당 30명 정원제",
             "event_time_info": "1부 10:00 / 2부 13:00 / 3부 15:30",
