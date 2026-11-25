@@ -522,7 +522,7 @@ export default function Home() {
             {/* Crawler Health Status */}
             <button
               onClick={() => setIsHealthOpen(true)}
-              className={`whitespace-nowrap flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
+              className={`whitespace-nowrap flex items-center justify-center gap-1.5 p-2 sm:px-2.5 sm:py-1 rounded-lg text-xs font-bold border transition ${
                 isAllCrawlersOk
                   ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
                   : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
@@ -541,7 +541,7 @@ export default function Home() {
                 type="button"
                 onClick={handleSyncGithub}
                 disabled={syncingGithub}
-                className={`whitespace-nowrap flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold border transition ${
+                className={`whitespace-nowrap flex items-center justify-center gap-1 p-1.5 sm:px-2.5 sm:py-1 rounded-lg text-xs font-bold border transition ${
                   syncingGithub
                     ? "bg-indigo-100 text-indigo-700 border-indigo-200 cursor-wait"
                     : "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 shadow-xs"
@@ -554,7 +554,6 @@ export default function Home() {
                   <CloudUploadIcon className="w-3.5 h-3.5 shrink-0" />
                 )}
                 <span className="hidden sm:inline">{syncingGithub ? "업로드 중..." : "GitHub 동기화"}</span>
-                <span className="sm:hidden">{syncingGithub ? "업로드" : "동기화"}</span>
               </button>
             )}
 
