@@ -32,10 +32,10 @@ const classifyInstitutionType = (p: Program): Exclude<InstitutionCategory, "ALL"
 
 const INSTITUTION_CATEGORIES: Array<{ key: InstitutionCategory; label: string }> = [
   { key: "ALL", label: "전체" },
-  { key: "LIBRARY", label: "📚 도서관" },
-  { key: "CULTURE", label: "🎨 체험/문화" },
-  { key: "YOUTH", label: "🎪 청소년센터" },
-  { key: "LEARN", label: "🏫 영어/송파런" },
+  { key: "LIBRARY", label: "도서관" },
+  { key: "CULTURE", label: "체험/문화" },
+  { key: "YOUTH", label: "청소년센터" },
+  { key: "LEARN", label: "영어/송파런" },
 ];
 
 const API_BASE = "http://localhost:8000";
@@ -615,7 +615,7 @@ export default function Home() {
               <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
                   { key: "ALL", label: "전체" },
-                  { key: "WEEKEND", label: "🎉 주말" },
+                  { key: "WEEKEND", label: "주말" },
                   { key: "WEEKDAY", label: "평일" },
                 ].map((d) => (
                   <button
@@ -637,9 +637,9 @@ export default function Home() {
               <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
                   { key: "ALL", label: "전체", title: "전 연령" },
-                  { key: "PRESCHOOL", label: "🎈 유아", title: "유아 및 유치원 (4~7세)" },
-                  { key: "ELEMENTARY", label: "🎒 초등", title: "초등학생" },
-                  { key: "OPEN", label: "🌟 누구나", title: "전 연령 및 가족 누구나" },
+                  { key: "PRESCHOOL", label: "유아", title: "유아 및 유치원 (4~7세)" },
+                  { key: "ELEMENTARY", label: "초등", title: "초등학생" },
+                  { key: "OPEN", label: "누구나", title: "전 연령 및 가족 누구나" },
                 ].map((a) => (
                   <button
                     key={a.key}
@@ -662,8 +662,8 @@ export default function Home() {
                 {[
                   { key: "ALL", label: "전체", dot: "", activeClass: "bg-gray-900 text-white shadow-xs" },
                   { key: "APPLY", label: "접수중", dot: "bg-emerald-500", activeClass: "bg-emerald-600 text-white shadow-xs" },
-                  { key: "READY", label: "접수예정", dot: "bg-amber-500", activeClass: "bg-amber-500 text-white shadow-xs" },
-                  { key: "WAIT", label: "대기접수", dot: "bg-yellow-500", activeClass: "bg-yellow-500 text-white shadow-xs" },
+                  { key: "READY", label: "접수예정", dot: "bg-sky-500", activeClass: "bg-sky-600 text-white shadow-xs" },
+                  { key: "WAIT", label: "대기접수", dot: "bg-orange-500", activeClass: "bg-orange-500 text-white shadow-xs" },
                 ].map((st) => {
                   const isActive = selectedStatus === st.key;
                   return (
@@ -696,7 +696,7 @@ export default function Home() {
                     : "bg-white text-violet-800 border-violet-200 hover:bg-violet-50"
                 }`}
               >
-                <span>✨ 신규</span>
+                <span>신규</span>
                 {newProgramsCount > 0 && (
                   <span className={`text-[10px] px-1 rounded ${onlyNew ? "bg-violet-700 text-white" : "bg-violet-100 text-violet-800"}`}>
                     {newProgramsCount}
