@@ -598,33 +598,6 @@ export default function Home() {
           {/* Row 1: Ultra-compact Quick Segments + Search */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              {/* Region Segment */}
-              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
-                {[
-                  { key: "ALL", label: "전체" },
-                  { key: "송파", label: "송파" },
-                  { key: "성남", label: "성남" },
-                  { key: "하남", label: "하남" },
-                ].map((r) => (
-                  <button
-                    key={r.key}
-                    type="button"
-                    onClick={() => {
-                      setSelectedRegion(r.key);
-                      setSelectedInstitutionType("ALL");
-                      setSelectedLibrary("ALL");
-                    }}
-                    className={`whitespace-nowrap px-2 sm:px-2.5 py-1 rounded-lg font-black transition ${
-                      selectedRegion === r.key
-                        ? "bg-white text-gray-950 shadow-xs"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    {r.label}
-                  </button>
-                ))}
-              </div>
-
               {/* Day Type Toggle (All / Weekend / Weekday) */}
               <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/70 text-[11px] sm:text-xs">
                 {[
