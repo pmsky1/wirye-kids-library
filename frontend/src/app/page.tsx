@@ -695,7 +695,7 @@ export default function Home() {
           </div>
 
           {/* Row 2: Compact Inline Category Chips + Slim Popover + Compact Search */}
-          <div className="relative pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="relative pt-2 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5 flex-wrap flex-1">
               <span className="text-[11px] font-bold text-gray-400 shrink-0 mr-0.5">기관:</span>
               {INSTITUTION_CATEGORIES.map((cat) => {
