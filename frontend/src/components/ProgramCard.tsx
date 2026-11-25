@@ -63,6 +63,13 @@ export default function ProgramCard({ program }: ProgramCardProps) {
     .replace(/\s+/g, " ")
     .trim();
 
+  const stripEmoji = (text?: string) =>
+    (text || "").replace(/^[\p{Extended_Pictographic}\uFE0F\u200D\s]+/gu, "").trim();
+
+  const cleanDayLabel = stripEmoji(program.day_label) || "주말";
+  const cleanTargetLabel = stripEmoji(program.target_label) || cleanTarget;
+  const cleanStatusLabel = stripEmoji(program.status_label);
+
   // Region color mapping
   const regionBadges: Record<string, { bg: string; text: string; border: string }> = {
     송파: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100" },
@@ -95,14 +102,14 @@ export default function ProgramCard({ program }: ProgramCardProps) {
             {/* NEW Badge */}
             {isNew && !isExpired && (
               <span className="whitespace-nowrap px-1.5 py-0.5 rounded-md text-[10px] font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-xs">
-                ✨ NEW
+                NEW
               </span>
             )}
 
             {/* Weekend / Weekday Badge */}
             {isWeekend ? (
               <span className="whitespace-nowrap px-1.5 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">
-                🎉 {program.day_label || "주말"}
+                {cleanDayLabel}
               </span>
             ) : null}
 
@@ -125,7 +132,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
                   : "bg-gray-50 text-gray-700 border-gray-200"
               }`}
             >
-              {program.target_age_group === "ALL" ? "🌟 누구나" : program.target_label}
+              {program.target_age_group === "ALL" ? "누구나" : cleanTargetLabel}
             </span>
           </div>
 
@@ -135,13 +142,13 @@ export default function ProgramCard({ program }: ProgramCardProps) {
               isApply
                 ? "bg-emerald-500 text-white shadow-xs"
                 : isReady
-                ? "bg-amber-400 text-amber-950 shadow-xs"
+                ? "bg-sky-500 text-white shadow-xs"
                 : isWait
-                ? "bg-blue-100 text-blue-700"
+                ? "bg-orange-500 text-white shadow-xs"
                 : "bg-gray-200 text-gray-500"
             }`}
           >
-            {isApply ? "⚡ 접수중" : isReady ? "⏰ 접수예정" : program.status_label}
+            {isApply ? "접수중" : isReady ? "접수예정" : isWait ? "대기접수" : cleanStatusLabel || "마감"}
           </span>
         </div>
 

@@ -480,20 +480,41 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 text-gray-900 selection:bg-amber-100">
       {/* Top Navbar: Clean & Premium Branding */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Brand Logo Symbol */}
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-sm shadow-indigo-500/25">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-sm shadow-indigo-500/25 shrink-0">
               <SparklesIcon className="w-4 h-4 text-cyan-200" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-black tracking-tight text-gray-950 font-sans whitespace-nowrap">
-                WiKids<span className="text-blue-600 font-extrabold text-sm ml-1">위키즈</span>
+              <span className="text-base sm:text-lg font-black tracking-tight text-gray-950 font-sans whitespace-nowrap">
+                WiKids<span className="hidden sm:inline text-blue-600 font-extrabold text-sm ml-1">위키즈</span>
               </span>
-              <span className="hidden sm:inline-block text-[11px] font-semibold text-gray-400 border-l border-gray-200 pl-2 whitespace-nowrap">
+              <span className="hidden md:inline-block text-[11px] font-semibold text-gray-400 border-l border-gray-200 pl-2 whitespace-nowrap">
                 위례 주말 키즈 큐레이션
               </span>
             </div>
+          </div>
+
+          {/* Center Empty Space -> Header Search Bar */}
+          <div className="relative flex-1 min-w-0 max-w-[180px] sm:max-w-xs lg:max-w-sm">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="강좌, 기관 검색"
+              className="w-full pl-7 pr-6 py-1.5 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-100/80 focus:bg-white transition"
+            />
+            <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2" />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-1.5 text-xs text-gray-400 hover:text-gray-600 font-bold"
+              >
+                ✕
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
@@ -694,8 +715,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Row 2: Compact Inline Category Chips + Slim Popover + Compact Search */}
-          <div className="relative pt-2 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          {/* Row 2: Compact Inline Category Chips + Slim Popover + Reset */}
+          <div className="relative pt-2 border-t border-gray-100 flex items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5 flex-wrap flex-1">
               <span className="text-[11px] font-bold text-gray-400 shrink-0 mr-0.5">기관:</span>
               {INSTITUTION_CATEGORIES.map((cat) => {
@@ -837,47 +858,25 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Compact Search + Reset */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="relative w-44 sm:w-48">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="강좌, 기관 검색"
-                  className="w-full pl-7 pr-6 py-1 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 focus:bg-white"
-                />
-                <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-1.5" />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2 top-1 text-xs text-gray-400 hover:text-gray-600 font-bold"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-
-              {(onlyNew || selectedDayType !== "WEEKEND" || selectedAge !== "PRESCHOOL" || selectedRegion !== "ALL" || selectedInstitutionType !== "ALL" || selectedLibrary !== "ALL" || selectedStatus !== "ALL" || searchQuery) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOnlyNew(false);
-                    setSelectedDayType("WEEKEND");
-                    setSelectedAge("PRESCHOOL");
-                    setSelectedRegion("ALL");
-                    setSelectedInstitutionType("ALL");
-                    setSelectedLibrary("ALL");
-                    setSelectedStatus("ALL");
-                    setSearchQuery("");
-                  }}
-                  className="whitespace-nowrap text-[11px] text-gray-400 hover:text-gray-700 underline font-semibold shrink-0"
-                >
-                  초기화
-                </button>
-              )}
-            </div>
+            {/* Reset button */}
+            {(onlyNew || selectedDayType !== "WEEKEND" || selectedAge !== "PRESCHOOL" || selectedRegion !== "ALL" || selectedInstitutionType !== "ALL" || selectedLibrary !== "ALL" || selectedStatus !== "ALL" || searchQuery) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setOnlyNew(false);
+                  setSelectedDayType("WEEKEND");
+                  setSelectedAge("PRESCHOOL");
+                  setSelectedRegion("ALL");
+                  setSelectedInstitutionType("ALL");
+                  setSelectedLibrary("ALL");
+                  setSelectedStatus("ALL");
+                  setSearchQuery("");
+                }}
+                className="whitespace-nowrap text-[11px] text-gray-400 hover:text-gray-700 underline font-semibold shrink-0"
+              >
+                초기화
+              </button>
+            )}
           </div>
         </div>
 
@@ -919,7 +918,7 @@ export default function Home() {
                 }`}
                 title="추천 정렬"
               >
-                ⚡ 추천순
+                추천순
               </button>
               <button
                 type="button"
@@ -931,7 +930,7 @@ export default function Home() {
                 }`}
                 title="행사일 기준 정렬"
               >
-                <span>📅 행사일</span>
+                <span>행사일</span>
                 {sortBy === "event_date" && (
                   sortOrder === "asc" ? <SortAscIcon className="w-3 h-3 text-white" /> : <SortDescIcon className="w-3 h-3 text-white" />
                 )}
@@ -946,7 +945,7 @@ export default function Home() {
                 }`}
                 title="접수일 기준 정렬"
               >
-                <span>⏰ 접수일</span>
+                <span>접수일</span>
                 {sortBy === "apply_date" && (
                   sortOrder === "asc" ? <SortAscIcon className="w-3 h-3 text-white" /> : <SortDescIcon className="w-3 h-3 text-white" />
                 )}

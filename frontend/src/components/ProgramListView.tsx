@@ -113,6 +113,11 @@ export default function ProgramListView({
             .replace(/\s+/g, " ")
             .trim();
 
+          const stripEmoji = (text?: string) =>
+            (text || "").replace(/^[\p{Extended_Pictographic}\uFE0F\u200D\s]+/gu, "").trim();
+
+          const cleanTargetLabel = stripEmoji(program.target_label) || cleanTarget;
+
           // Region badge color
           const regionColor: Record<string, string> = {
             송파: "bg-indigo-50 text-indigo-700 border-indigo-200",
@@ -142,18 +147,18 @@ export default function ProgramListView({
                       isApply
                         ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                         : isReady
-                        ? "bg-amber-50 text-amber-800 border-amber-300"
+                        ? "bg-sky-50 text-sky-700 border-sky-300"
                         : isWait
-                        ? "bg-yellow-50 text-yellow-800 border-yellow-300"
+                        ? "bg-orange-50 text-orange-700 border-orange-300"
                         : "bg-gray-100 text-gray-600 border-gray-200"
                     }`}
                   >
-                    {isApply ? "⚡ 접수중" : isReady ? "⏰ 접수예정" : isWait ? "⏳ 대기접수" : "마감"}
+                    {isApply ? "접수중" : isReady ? "접수예정" : isWait ? "대기접수" : "마감"}
                   </span>
 
                   {isNew && !isExpired && (
                     <span className="whitespace-nowrap px-2 py-0.5 rounded-md text-[10px] font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-sm">
-                      ✨ NEW
+                      NEW
                     </span>
                   )}
                 </div>
@@ -186,11 +191,11 @@ export default function ProgramListView({
                           : "bg-blue-50 text-blue-800"
                       }`}
                     >
-                      {program.target_age_group === "ALL" ? "🌟 누구나" : program.target_label || cleanTarget}
+                      {program.target_age_group === "ALL" ? "누구나" : cleanTargetLabel}
                     </span>
                     {isWeekend && (
                       <span className="whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-900 border border-blue-200">
-                        🎉 주말
+                        주말
                       </span>
                     )}
                   </div>
@@ -271,18 +276,18 @@ export default function ProgramListView({
                         isApply
                           ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                           : isReady
-                          ? "bg-amber-50 text-amber-800 border-amber-300"
+                          ? "bg-sky-50 text-sky-700 border-sky-300"
                           : isWait
-                          ? "bg-yellow-50 text-yellow-800 border-yellow-300"
+                          ? "bg-orange-50 text-orange-700 border-orange-300"
                           : "bg-gray-100 text-gray-600 border-gray-200"
                       }`}
                     >
-                      {isApply ? "⚡ 접수중" : isReady ? "⏰ 접수예정" : isWait ? "⏳ 대기접수" : "마감"}
+                      {isApply ? "접수중" : isReady ? "접수예정" : isWait ? "대기접수" : "마감"}
                     </span>
 
                     {isNew && !isExpired && (
                       <span className="whitespace-nowrap px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white">
-                        ✨ NEW
+                        NEW
                       </span>
                     )}
 
@@ -300,7 +305,7 @@ export default function ProgramListView({
 
                   {isWeekend && (
                     <span className="whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-900 border border-blue-200">
-                      🎉 주말
+                      주말
                     </span>
                   )}
                 </div>
