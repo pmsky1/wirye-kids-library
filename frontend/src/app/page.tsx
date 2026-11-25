@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import ProgramCard, { Program } from "@/components/ProgramCard";
 import ProgramListView from "@/components/ProgramListView";
-import BookmarkletModal from "@/components/BookmarkletModal";
 import CrawlerHealthModal from "@/components/CrawlerHealthModal";
 import {
   SparklesIcon,
@@ -171,7 +170,6 @@ export default function Home() {
   };
 
   // Modals
-  const [isBookmarkletOpen, setIsBookmarkletOpen] = useState(false);
   const [isHealthOpen, setIsHealthOpen] = useState(false);
 
   // Fetch data
@@ -534,16 +532,6 @@ export default function Home() {
               </button>
             )}
 
-            {/* Booster Modal Trigger */}
-            <button
-              onClick={() => setIsBookmarkletOpen(true)}
-              className="whitespace-nowrap flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold hover:bg-amber-100 transition"
-              title="수강신청 자동완성 부스터 안내"
-            >
-              <SparklesIcon className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span>예약 부스터</span>
-            </button>
-
             {/* Refresh Button */}
             <button
               onClick={handleManualRefresh}
@@ -704,30 +692,10 @@ export default function Home() {
                 )}
               </button>
             </div>
-
-            {/* Keyword Search */}
-            <div className="relative w-full lg:w-52">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="도서관명, 강좌명 검색"
-                className="w-full pl-8 pr-7 py-1.5 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 focus:bg-white"
-              />
-              <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-1.5 text-xs text-gray-400 hover:text-gray-600 font-bold"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
           </div>
 
-          {/* Row 2: Compact Inline Category Chips + Slim Popover Chip */}
-          <div className="relative pt-2 border-t border-gray-100 flex items-center justify-between gap-2 text-xs">
+          {/* Row 2: Compact Inline Category Chips + Slim Popover + Compact Search */}
+          <div className="relative pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1.5 flex-wrap flex-1">
               <span className="text-[11px] font-bold text-gray-400 shrink-0 mr-0.5">기관:</span>
               {INSTITUTION_CATEGORIES.map((cat) => {
@@ -869,25 +837,47 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Reset Filters button if any active */}
-            {(onlyNew || selectedDayType !== "WEEKEND" || selectedAge !== "PRESCHOOL" || selectedRegion !== "ALL" || selectedInstitutionType !== "ALL" || selectedLibrary !== "ALL" || selectedStatus !== "ALL" || searchQuery) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setOnlyNew(false);
-                  setSelectedDayType("WEEKEND");
-                  setSelectedAge("PRESCHOOL");
-                  setSelectedRegion("ALL");
-                  setSelectedInstitutionType("ALL");
-                  setSelectedLibrary("ALL");
-                  setSelectedStatus("ALL");
-                  setSearchQuery("");
-                }}
-                className="whitespace-nowrap text-[11px] text-gray-400 hover:text-gray-700 underline font-semibold shrink-0"
-              >
-                초기화
-              </button>
-            )}
+            {/* Right: Compact Search + Reset */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="relative w-44 sm:w-48">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="강좌, 기관 검색"
+                  className="w-full pl-7 pr-6 py-1 rounded-xl border border-gray-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 focus:bg-white"
+                />
+                <SearchIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-1.5" />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2 top-1 text-xs text-gray-400 hover:text-gray-600 font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {(onlyNew || selectedDayType !== "WEEKEND" || selectedAge !== "PRESCHOOL" || selectedRegion !== "ALL" || selectedInstitutionType !== "ALL" || selectedLibrary !== "ALL" || selectedStatus !== "ALL" || searchQuery) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOnlyNew(false);
+                    setSelectedDayType("WEEKEND");
+                    setSelectedAge("PRESCHOOL");
+                    setSelectedRegion("ALL");
+                    setSelectedInstitutionType("ALL");
+                    setSelectedLibrary("ALL");
+                    setSelectedStatus("ALL");
+                    setSearchQuery("");
+                  }}
+                  className="whitespace-nowrap text-[11px] text-gray-400 hover:text-gray-700 underline font-semibold shrink-0"
+                >
+                  초기화
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1080,10 +1070,6 @@ export default function Home() {
       </main>
 
       {/* Modals */}
-      <BookmarkletModal
-        isOpen={isBookmarkletOpen}
-        onClose={() => setIsBookmarkletOpen(false)}
-      />
       <CrawlerHealthModal
         isOpen={isHealthOpen}
         onClose={() => setIsHealthOpen(false)}
