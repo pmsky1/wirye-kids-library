@@ -229,10 +229,10 @@ def check_is_new(
     now: Optional[datetime] = None,
 ) -> bool:
     """
-    신규 강좌 판정 (B안):
+    신규 강좌 판정 (자정 기준):
     1) 만료되었거나 마감(CLOSED)된 강좌는 제외
-    2) 접수 시작일(apply_start)이 오늘 기준 앞뒤 2일([today-2d, today+2d]) 이내이거나
-    3) DB 최초 수집 시각(first_seen_at / created_at)이 최근 48시간 이내인 경우
+    2) 접수 시작일(apply_start)이 오늘 자정 기준 ±3일([today-3d, today+3d]) 이내이거나
+    3) DB 최초 수집 시각(first_seen_at / created_at) + 24시간 이후 끝나는 자정(00:00) 전인 경우
     """
     if is_expired or status == "CLOSED":
         return False
@@ -240,24 +240,46 @@ def check_is_new(
     current = now or datetime.now(KST).replace(tzinfo=None)
     if current.tzinfo is not None:
         current = current.astimezone(KST).replace(tzinfo=None)
-    min_day = (current - timedelta(days=2)).strftime("%Y-%m-%d")
-    max_day = (current + timedelta(days=2)).strftime("%Y-%m-%d")
+
+    today_date = current.date()
+    min_date = today_date - timedelta(days=3)
+    max_date = today_date + timedelta(days=3)
 
     if apply_start and len(apply_start) >= 10:
-        apply_day = apply_start[:10]
-        if min_day <= apply_day <= max_day:
-            return True
+        try:
+            apply_date = datetime.strptime(apply_start[:10], "%Y-%m-%d").date()
+            if min_date <= apply_date <= max_date:
+                return True
+        except ValueError:
+            pass
 
     if first_seen_at:
         try:
             seen_dt = datetime.fromisoformat(first_seen_at.replace("Z", "+00:00"))
             if seen_dt.tzinfo is not None:
                 seen_dt = seen_dt.astimezone(KST).replace(tzinfo=None)
-            if (current - seen_dt).total_seconds() <= 48 * 3600:
+            after_24h = seen_dt + timedelta(hours=24)
+            if (
+                after_24h.hour == 0
+                and after_24h.minute == 0
+                and after_24h.second == 0
+                and after_24h.microsecond == 0
+            ):
+                expiry_midnight = after_24h
+            else:
+                expiry_midnight = datetime.combine(
+                    after_24h.date() + timedelta(days=1),
+                    datetime.min.time(),
+                )
+            if current < expiry_midnight:
                 return True
         except Exception:
-            if first_seen_at[:10] >= min_day:
-                return True
+            try:
+                seen_date = datetime.strptime(first_seen_at[:10], "%Y-%m-%d").date()
+                if today_date < seen_date + timedelta(days=2):
+                    return True
+            except ValueError:
+                pass
 
     return False
 
