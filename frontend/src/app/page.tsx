@@ -307,9 +307,18 @@ export default function Home() {
       }
     };
 
+    const isPeriodProgram = (p: Program) => {
+      const start = (p.event_start || "").slice(0, 10);
+      const end = (p.event_end || "").slice(0, 10);
+      // 일정 기간(시작~종료가 다른 다일 행사/강좌) 또는 특정 날짜 없는 상시/정기 운영을 후순위 배치
+      return !start || Boolean(end && start !== end);
+    };
+
     return list.sort((a, b) => {
       // 1. 날짜별 사용자 선택 정렬 (행사일순 / 접수일순)
       if (sortBy === "event_date") {
+        const periodDiff = Number(isPeriodProgram(a)) - Number(isPeriodProgram(b));
+        if (periodDiff !== 0) return sortOrder === "asc" ? periodDiff : -periodDiff;
         const dateA = a.event_start || "9999-99-99";
         const dateB = b.event_start || "9999-99-99";
         if (dateA !== dateB) {
@@ -331,10 +340,14 @@ export default function Home() {
         return wA - wB;
       }
 
-      // 2. 기본 추천 정렬 (접수중/예정 우선 -> 2일 신규 -> 주말 -> 접수일순)
+      // 2. 기본 추천 정렬 (접수중/예정 우선 -> 단일일 우선/일정기간 후순위 -> 2일 신규 -> 주말 -> 행사일/접수일순)
       const wA = getStatusWeight(a.status);
       const wB = getStatusWeight(b.status);
       if (wA !== wB) return wA - wB;
+
+      // 일정 기간(장기 강좌, 전시, 방학 특강 등)은 단일 행사일 아래에 배치
+      const periodDiff = Number(isPeriodProgram(a)) - Number(isPeriodProgram(b));
+      if (periodDiff !== 0) return periodDiff;
 
       // 신규 업데이트 등록 강좌 우선
       const newA = a.is_new ? 1 : 0;
@@ -346,7 +359,10 @@ export default function Home() {
       const weekendB = b.day_type === "WEEKEND" ? 1 : 0;
       if (weekendA !== weekendB) return weekendB - weekendA;
 
-      // 신청 시작일시 오름차순
+      // 다가오는 행사일 / 신청 시작일 오름차순
+      const eventA = a.event_start || "9999-99-99";
+      const eventB = b.event_start || "9999-99-99";
+      if (eventA !== eventB) return eventA.localeCompare(eventB);
       if (a.apply_start && b.apply_start) {
         return a.apply_start.localeCompare(b.apply_start);
       }

@@ -9,6 +9,10 @@ from crawlers.seongnam import fetch_seongnam_programs
 from crawlers.experience import fetch_experience_programs
 
 
+async def _run_with_timeout(coro, timeout_sec: float = 45.0):
+    return await asyncio.wait_for(coro, timeout=timeout_sec)
+
+
 async def run_all_crawlers() -> Dict[str, Any]:
     """
     송파구립 13개 도서관, 송파런, 하남위례, 성남위례, 체험관 및 송파소식 크롤러를 비동기 병렬로 실행하여
@@ -17,11 +21,11 @@ async def run_all_crawlers() -> Dict[str, Any]:
     print("[Crawler Manager] Starting crawls for Songpa, SongpaLearn, Hanam, Seongnam, and Experience...")
 
     results = await asyncio.gather(
-        fetch_songpa_programs(),
-        fetch_songpa_learn_programs(),
-        fetch_hanam_programs(),
-        fetch_seongnam_programs(),
-        fetch_experience_programs(),
+        _run_with_timeout(fetch_songpa_programs(), 45.0),
+        _run_with_timeout(fetch_songpa_learn_programs(), 45.0),
+        _run_with_timeout(fetch_hanam_programs(), 30.0),
+        _run_with_timeout(fetch_seongnam_programs(), 30.0),
+        _run_with_timeout(fetch_experience_programs(), 45.0),
         return_exceptions=True
     )
 

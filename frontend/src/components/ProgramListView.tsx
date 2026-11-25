@@ -27,9 +27,9 @@ export default function ProgramListView({
   if (programs.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-200/90 shadow-sm overflow-hidden">
-      {/* Desktop Table Header */}
-      <div className="hidden lg:grid grid-cols-12 gap-3 px-5 py-3.5 bg-slate-50 border-b border-gray-200 text-xs font-black text-gray-500 uppercase tracking-wider items-center select-none">
+    <div className="bg-white rounded-3xl border border-gray-200/90 shadow-sm overflow-x-clip">
+      {/* Desktop Table Header (Sticky below top navbar) */}
+      <div className="hidden lg:grid sticky top-14 z-20 rounded-t-3xl grid-cols-12 gap-3 px-5 py-3.5 bg-slate-50/95 backdrop-blur-sm border-b border-gray-200 text-xs font-black text-gray-500 uppercase tracking-wider items-center select-none shadow-xs">
         <div className="col-span-2">상태 / 신규</div>
         <div className="col-span-2">도서관 (권역)</div>
         <div className="col-span-4">프로그램명 / 대상 연령</div>
@@ -94,7 +94,7 @@ export default function ProgramListView({
       </div>
 
       {/* Rows */}
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-gray-100 rounded-b-3xl overflow-hidden">
         {programs.map((program) => {
           const isApply = program.status === "APPLY";
           const isReady = program.status === "READY";

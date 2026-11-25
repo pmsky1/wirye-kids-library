@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26 00:25 KST",
+  "generated_at": "2026-11-26 00:32 KST",
   "total": 312,
   "active_total": 58,
   "new_count": 54,
@@ -327,8 +327,8 @@
     {
       "source": "EXPERIENCE",
       "library_name": "송파어린이문화회관 (체험관 및 영유아 문화공간)",
-      "last_attempt_at": "2026-11-26 00:25:55",
-      "last_success_at": "2026-11-26 00:25:55",
+      "last_attempt_at": "2026-11-26 00:32:43",
+      "last_success_at": "2026-11-26 00:32:43",
       "status": "OK",
       "item_count": 29,
       "error_message": null
@@ -336,8 +336,8 @@
     {
       "source": "HANAM",
       "library_name": "하남시립 위례도서관",
-      "last_attempt_at": "2026-11-26 00:25:55",
-      "last_success_at": "2026-11-26 00:25:55",
+      "last_attempt_at": "2026-11-26 00:32:43",
+      "last_success_at": "2026-11-26 00:32:43",
       "status": "OK",
       "item_count": 2,
       "error_message": ""
@@ -345,8 +345,8 @@
     {
       "source": "SEONGNAM",
       "library_name": "성남시립 위례도서관",
-      "last_attempt_at": "2026-11-26 00:25:55",
-      "last_success_at": "2026-11-26 00:25:55",
+      "last_attempt_at": "2026-11-26 00:32:43",
+      "last_success_at": "2026-11-26 00:32:43",
       "status": "OK",
       "item_count": 4,
       "error_message": ""
@@ -354,8 +354,8 @@
     {
       "source": "SONGPA",
       "library_name": "송파구 통합도서관(송파위례, 글마루, 어린이 등)",
-      "last_attempt_at": "2026-11-26 00:25:55",
-      "last_success_at": "2026-11-26 00:25:55",
+      "last_attempt_at": "2026-11-26 00:32:43",
+      "last_success_at": "2026-11-26 00:32:43",
       "status": "OK",
       "item_count": 242,
       "error_message": ""
@@ -363,8 +363,8 @@
     {
       "source": "SONGPA_LEARN",
       "library_name": "송파런 (원어민캠프 및 자치회관 강좌)",
-      "last_attempt_at": "2026-11-26 00:25:55",
-      "last_success_at": "2026-11-26 00:25:55",
+      "last_attempt_at": "2026-11-26 00:32:43",
+      "last_success_at": "2026-11-26 00:32:43",
       "status": "OK",
       "item_count": 17,
       "error_message": ""
@@ -397,5 +397,6 @@
       "error": null
     },
     "total": 294
-  }
+  },
+  "restored_sources": []
 }

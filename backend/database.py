@@ -318,11 +318,19 @@ def query_programs(
         results.append(item)
 
     status_rank = {"APPLY": 1, "READY": 2, "WAIT": 3}
+
+    def _is_period_event(row: Dict[str, Any]) -> int:
+        s = (row.get("event_start") or "")[:10]
+        e = (row.get("event_end") or "")[:10]
+        return 1 if (not s or (e and s != e)) else 0
+
     results.sort(
         key=lambda x: (
             status_rank.get(x.get("status", ""), 4),
+            _is_period_event(x),
             -(1 if x.get("is_new") else 0),
             1 if x.get("day_type") == "WEEKEND" else 2,
+            x.get("event_start") or "9999-99-99",
             x.get("apply_start") or "9999-99-99",
             x.get("id", ""),
         )

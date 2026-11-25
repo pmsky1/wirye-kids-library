@@ -50,8 +50,9 @@ async def fetch_songpa_programs() -> Tuple[List[Program], str, str]:
     status = "OK"
     error_msg = ""
     zero_item_count = 0
+    consecutive_net_errors = 0
 
-    async with httpx.AsyncClient(verify=False, timeout=12.0) as client:
+    async with httpx.AsyncClient(verify=False, timeout=8.0) as client:
         for manage_cd, (lib_name, region) in LIBRARY_MAP.items():
             try:
                 for page in [1, 2]:
@@ -61,9 +62,13 @@ async def fetch_songpa_programs() -> Tuple[List[Program], str, str]:
                     }
                     try:
                         res = await client.get(LIST_URL, params=params, headers=headers)
+                        consecutive_net_errors = 0
                     except Exception as net_err:
+                        consecutive_net_errors += 1
                         status = "WARNING"
                         error_msg = f"송파 연결 지연: {net_err}"
+                        if consecutive_net_errors >= 3 and len(programs) == 0:
+                            return [], "ERROR", f"송파구 통합도서관 접속 타임아웃 (해외 IP 차단 가능성): {net_err}"
                         continue
 
                     if res.status_code != 200:
