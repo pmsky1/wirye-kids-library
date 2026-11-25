@@ -21,9 +21,9 @@ DATA_REL_PATHS = [
     "frontend/public/data/stats.json",
 ]
 
-from database import init_db, query_programs, get_library_stats, get_crawler_logs, upsert_programs  # noqa: E402
+from database import init_db, query_programs, get_library_stats, get_crawler_logs, upsert_programs, seed_baseline_programs  # noqa: E402
 from crawlers.manager import run_all_crawlers  # noqa: E402
-from crawlers.normalizer import check_is_expired  # noqa: E402
+from crawlers.normalizer import check_is_expired, check_is_new  # noqa: E402
 from models import Program  # noqa: E402
 
 _sync_lock = asyncio.Lock()
@@ -109,6 +109,14 @@ def _restore_failed_sources(summary: Dict[str, Any], baseline: Dict[str, List[Di
                         r_copy["is_new"] = False
                         r_copy["status"] = "CLOSED"
                         r_copy["status_label"] = "마감"
+                    else:
+                        r_copy["is_new"] = check_is_new(
+                            r_copy.get("apply_start"),
+                            r_copy.get("status", "APPLY"),
+                            r_copy.get("title", ""),
+                            is_expired=False,
+                            first_seen_at=r.get("created_at"),
+                        )
                     r_copy.pop("created_at", None)
                     r_copy.pop("updated_at", None)
                     to_restore.append(Program(**r_copy))
@@ -269,7 +277,10 @@ async def sync_github_pages(crawl: bool = True, reason: str = "manual") -> Dict[
     """로컬에서 최신 데이터를 수집해 정적 JSON을 갱신하고 변경 시 GitHub에 업로드합니다."""
     global _last_sync_info
     async with _sync_lock:
+        baseline = _load_baseline_by_source()
         init_db()
+        baseline_rows = [row for rows in baseline.values() for row in rows]
+        seed_baseline_programs(baseline_rows)
         summary = None
         if crawl:
             summary = await run_all_crawlers()
@@ -297,6 +308,10 @@ async def export_static_data() -> int:
     baseline = _load_baseline_by_source()
     baseline_logs = _load_baseline_logs()
     init_db()
+    baseline_rows = [row for rows in baseline.values() for row in rows]
+    seeded = seed_baseline_programs(baseline_rows)
+    if seeded:
+        print(f"[Export Static] Seeded {seeded} baseline rows (preserving original created_at)")
     summary = await run_all_crawlers()
 
     restored = _restore_failed_sources(summary, baseline)

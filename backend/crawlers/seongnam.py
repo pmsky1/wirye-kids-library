@@ -321,7 +321,7 @@ async def fetch_seongnam_programs() -> Tuple[List[Program], str, str]:
                         target_raw="위례도서관 정규 프로그램",
                         day_type=cal_day_type,
                         day_label=cal_day_label,
-                        is_new=True,
+                        is_new=False,
                         is_expired=False,
                         fee="무료",
                         capacity="정원제",

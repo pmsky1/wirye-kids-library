@@ -2,8 +2,10 @@
 연령 및 프로그램 상태, 주말/평일 정규화 모듈
 """
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
+
+KST = timezone(timedelta(hours=9))
 
 
 def is_kids_program(raw_target: str, title: str = "") -> bool:
@@ -222,24 +224,40 @@ def check_is_new(
     apply_start: Optional[str],
     status: str,
     title: str = "",
-    is_expired: bool = False
+    is_expired: bool = False,
+    first_seen_at: Optional[str] = None,
+    now: Optional[datetime] = None,
 ) -> bool:
     """
-    신규 등록/업데이트된 강좌인지 판정 (최근 2일 이내 접수 시작 또는 오픈 대기 중)
+    신규 강좌 판정 (B안):
+    1) 만료되었거나 마감(CLOSED)된 강좌는 제외
+    2) 접수 시작일(apply_start)이 오늘 기준 앞뒤 2일([today-2d, today+2d]) 이내이거나
+    3) DB 최초 수집 시각(first_seen_at / created_at)이 최근 48시간 이내인 경우
     """
-    if is_expired:
+    if is_expired or status == "CLOSED":
         return False
 
-    now = datetime.now()
-    threshold_2days = (now - timedelta(days=2)).strftime("%Y-%m-%d")
+    current = now or datetime.now(KST).replace(tzinfo=None)
+    if current.tzinfo is not None:
+        current = current.astimezone(KST).replace(tzinfo=None)
+    min_day = (current - timedelta(days=2)).strftime("%Y-%m-%d")
+    max_day = (current + timedelta(days=2)).strftime("%Y-%m-%d")
 
-    # 오픈 예정인 강좌는 앞으로 열릴 최신 강좌이므로 신규로 분류
-    if status == "READY":
-        return True
+    if apply_start and len(apply_start) >= 10:
+        apply_day = apply_start[:10]
+        if min_day <= apply_day <= max_day:
+            return True
 
-    # 접수 시작일이 최근 2일 이내이거나 미래인 경우
-    if apply_start and len(apply_start) >= 10 and apply_start[:10] >= threshold_2days:
-        return True
+    if first_seen_at:
+        try:
+            seen_dt = datetime.fromisoformat(first_seen_at.replace("Z", "+00:00"))
+            if seen_dt.tzinfo is not None:
+                seen_dt = seen_dt.astimezone(KST).replace(tzinfo=None)
+            if (current - seen_dt).total_seconds() <= 48 * 3600:
+                return True
+        except Exception:
+            if first_seen_at[:10] >= min_day:
+                return True
 
     return False
 

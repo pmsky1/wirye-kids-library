@@ -1,9 +1,15 @@
 import sqlite3
 import os
 from typing import List, Optional, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from models import Program
-from crawlers.normalizer import check_is_expired, matches_age_filter
+from crawlers.normalizer import check_is_expired, check_is_new, matches_age_filter
+
+KST = timezone(timedelta(hours=9))
+
+
+def _now_kst_naive() -> datetime:
+    return datetime.now(KST).replace(tzinfo=None)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "wirye_kids.db")
 
@@ -120,7 +126,7 @@ def get_crawler_logs() -> List[Dict[str, Any]]:
 def upsert_programs(programs: List[Program]):
     conn = get_db()
     cursor = conn.cursor()
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now_str = _now_kst_naive().strftime("%Y-%m-%d %H:%M:%S")
 
     for p in programs:
         cursor.execute("""
@@ -164,6 +170,66 @@ def upsert_programs(programs: List[Program]):
         ))
     conn.commit()
     conn.close()
+
+
+def seed_baseline_programs(rows: List[Dict[str, Any]]) -> int:
+    """
+    빈 DB(CI 등)에서도 기존 programs.json의 최초 수집 시각(created_at)을 보존하기 위해
+    크롤러 실행 전 존재하지 않는 ID만 INSERT OR IGNORE로 시드합니다.
+    """
+    if not rows:
+        return 0
+    conn = get_db()
+    cursor = conn.cursor()
+    fallback_now = _now_kst_naive().strftime("%Y-%m-%d %H:%M:%S")
+    inserted = 0
+    for r in rows:
+        if not r.get("id") or not r.get("source") or not r.get("title"):
+            continue
+        cursor.execute(
+            """
+            INSERT OR IGNORE INTO programs (
+                id, source, library_name, region, title, target_age_group, target_label,
+                target_raw, day_type, day_label, is_new, is_expired, fee, capacity,
+                apply_start, apply_end, event_start, event_end,
+                event_time_info, location, status, status_label, detail_url, apply_url,
+                created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                r.get("id"),
+                r.get("source"),
+                r.get("library_name", ""),
+                r.get("region", ""),
+                r.get("title"),
+                r.get("target_age_group", "ALL"),
+                r.get("target_label", "전체"),
+                r.get("target_raw"),
+                r.get("day_type", "ALL"),
+                r.get("day_label", "상시/미정"),
+                1 if r.get("is_new") else 0,
+                1 if r.get("is_expired") else 0,
+                r.get("fee", "무료"),
+                r.get("capacity"),
+                r.get("apply_start"),
+                r.get("apply_end"),
+                r.get("event_start"),
+                r.get("event_end"),
+                r.get("event_time_info"),
+                r.get("location"),
+                r.get("status", "APPLY"),
+                r.get("status_label", "접수중"),
+                r.get("detail_url", ""),
+                r.get("apply_url"),
+                r.get("created_at") or fallback_now,
+                r.get("updated_at") or fallback_now,
+            ),
+        )
+        if cursor.rowcount > 0:
+            inserted += 1
+    conn.commit()
+    conn.close()
+    return inserted
 
 
 def expire_missing_programs(source: str, collected_ids: List[str]):
@@ -231,6 +297,17 @@ def _refresh_realtime_flags(item: Dict[str, Any], now: datetime) -> Dict[str, An
         if expired:
             item["is_expired"] = 1
             item["is_new"] = 0
+        else:
+            item["is_new"] = 1 if check_is_new(
+                item.get("apply_start"),
+                item.get("status", "APPLY"),
+                title=item.get("title", ""),
+                is_expired=False,
+                first_seen_at=item.get("created_at"),
+                now=now,
+            ) else 0
+    else:
+        item["is_new"] = 0
     return item
 
 
@@ -296,7 +373,7 @@ def query_programs(
     rows = cursor.fetchall()
     conn.close()
 
-    now = datetime.now()
+    now = _now_kst_naive()
     results: List[Dict[str, Any]] = []
     for r in rows:
         item = _refresh_realtime_flags(dict(r), now)

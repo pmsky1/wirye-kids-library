@@ -335,7 +335,7 @@ async def _fetch_songpa_movies(client: httpx.AsyncClient, programs: List[Program
                             target_raw=target_raw,
                             day_type=day_type,
                             day_label=day_label,
-                            is_new=True,
+                            is_new=check_is_new(None, "APPLY", movie_title),
                             is_expired=False,
                             fee="무료",
                             capacity="선착순 무료 관람",
