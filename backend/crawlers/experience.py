@@ -3,6 +3,7 @@
 - 송파어린이문화회관 상설 체험관 + 실시간 재능/문화 강좌(songpakids.com)
 - 송파소식 웹진(songpa.newstool.co.kr) 최신호 특집/청소년/문화캘린더 유아·어린이·가족·누구나 행사
 """
+import asyncio
 from datetime import datetime, timedelta
 import hashlib
 import re
@@ -730,6 +731,29 @@ def _parse_newstool_article(
     return programs
 
 
+async def _is_google_form_closed(client: httpx.AsyncClient, url: str) -> bool:
+    """Google Form(forms.gle / docs.google.com/forms)의 실제 접수 마감 여부를 확인합니다."""
+    if not url or ("forms.gle" not in url and "docs.google.com/forms" not in url):
+        return False
+    try:
+        resp = await client.get(url, follow_redirects=True, timeout=8)
+        final_url = str(resp.url).lower()
+        if "/closedform" in final_url:
+            return True
+        body_lower = resp.text.lower()
+        return any(
+            kw in body_lower
+            for kw in (
+                "더 이상 응답을 받지 않",
+                "신청 마감되었습니다",
+                "신청이 마감되었습니다",
+                "no longer accepting responses",
+            )
+        )
+    except Exception:
+        return False
+
+
 async def _fetch_songpa_newstool(client: httpx.AsyncClient) -> List[Program]:
     """송파소식 웹진(songpa.newstool.co.kr) 최신호에서 유아·초등·누구나 행사를 수집합니다."""
     items: List[Program] = []
@@ -780,6 +804,21 @@ async def _fetch_songpa_newstool(client: httpx.AsyncClient) -> List[Program]:
             items.extend(parsed)
         except Exception as e:
             print(f"[Experience Crawler] Songpa Newstool aid={aid} warning: {e}")
+
+    form_items = [
+        p
+        for p in items
+        if p.apply_url and ("forms.gle" in p.apply_url or "docs.google.com/forms" in p.apply_url)
+    ]
+    if form_items:
+        closed_flags = await asyncio.gather(
+            *(_is_google_form_closed(client, p.apply_url or "") for p in form_items)
+        )
+        for p, is_closed in zip(form_items, closed_flags):
+            if is_closed:
+                p.status = "CLOSED"
+                p.status_label = "마감"
+                p.is_new = False
 
     return items
 
